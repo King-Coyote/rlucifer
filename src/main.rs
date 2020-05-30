@@ -11,6 +11,7 @@ fn main() {
     let mut height: usize = 480;
     let mut samples = 10;
     let args: Vec<String> = env::args().collect();
+    
 	if args.len() <= 2 {
 		println!("Insufficent args specified, using default height=600/width=480/samples=10\n");
 	} else {
