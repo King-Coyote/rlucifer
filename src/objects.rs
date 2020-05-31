@@ -6,3 +6,6 @@ mod object;
 
 pub use self::light::Light;
 mod light;
+
+pub use self::camera::Camera;
+mod camera;

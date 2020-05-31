@@ -30,28 +30,27 @@ fn main() {
     
     println!("Running with: width {}, height {}, samples {}.", width, height, samples);
 
-    // let mut mainScene = Scene::new();
-	// // ObjectFactoryJson ofj("scene.json");
-	// // mainScene.setObjects(ofj.createObjects());
-    // // mainScene.setLights(ofj.createLights());
+    let mut mainScene = Scene::new();
+    // let mut camera = Camera::new(
+    //     Vector3::new()
+    // );
     
-    // let mut pixels: Vec<Vec<Pixel>> = Vec::with_capacity(width);
-	// for i in 0..width {
-	// 	pixels[i] = Vec::with_capacity(height);
-    // }
+    let mut pixels: Vec<Vec<Pixel>> = Vec::with_capacity(width);
+	for i in 0..width {
+		pixels[i] = Vec::with_capacity(height);
+    }
     
-    // urb.setSeed((omp_get_thread_num() + 13)*47);
-    // for j in 0..height {
-    //     print!("Rendering percent complete: {}\r", (j/height)*100);
-    //     for i in 0..width {
-    //         for s in 0..samples {   
-    //             let mut radiance = Pixel::new_blank();
-    //             let mut mainRay = Ray::new(camera.getPosition(), camera.pixelToImage(i, j));
-    //             raytracer.tracePixel(radiance, mainRay, mainScene, urb, 0);
-    //             pixels[i][j] += radiance / samples;
-    //         }
-    //     }
-    // }
+    for j in 0..height {
+        print!("Rendering percent complete: {}\r", (j/height)*100);
+        for i in 0..width {
+            for s in 0..samples {   
+                let mut radiance = Pixel::new_blank();
+                // let mut mainRay = Ray::new(camera.get_position(), camera.pixel_to_img(i, j));
+                // raytracer.tracePixel(radiance, mainRay, mainScene, urb, 0);
+                // pixels[i][j] += radiance / samples;
+            }
+        }
+    }
 
 
 }
