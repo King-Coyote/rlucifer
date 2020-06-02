@@ -1,9 +1,14 @@
+extern crate raster;
+
 use std::env;
+use std::time::{Instant, Duration};
 use basic_types::*;
 use objects::*;
+use image_conversion::convert_image;
 
 mod basic_types;
 mod objects;
+mod image_conversion;
 
 fn main() {
 
@@ -32,19 +37,21 @@ fn main() {
 
     let mut mainScene = Scene::new();
     // let mut camera = Camera::new(
-    //     Vector3::new()
+    //     Vector3::new(),
+    //     Vector3::new(),
+    //     width as i32,
+    //     height as i32
     // );
     
-    let mut pixels: Vec<Vec<Pixel>> = Vec::with_capacity(width);
-	for i in 0..width {
-		pixels[i] = Vec::with_capacity(height);
-    }
+    let mut pixels: Vec<Vec<Pixel>> = vec![vec![Pixel::new_default(); height]; width];
+
+    let time_before = Instant::now();
     
     for j in 0..height {
         print!("Rendering percent complete: {}\r", (j/height)*100);
         for i in 0..width {
             for s in 0..samples {   
-                let mut radiance = Pixel::new_blank();
+                let mut radiance = Pixel::new_black();
                 // let mut mainRay = Ray::new(camera.get_position(), camera.pixel_to_img(i, j));
                 // raytracer.tracePixel(radiance, mainRay, mainScene, urb, 0);
                 // pixels[i][j] += radiance / samples;
@@ -52,5 +59,9 @@ fn main() {
         }
     }
 
+    let time_taken = Instant::now().duration_since(time_before).as_secs_f32();
+    println!("Total time taken for render is: {} s", time_taken);
+
+    convert_image("render_img.png", width, height, &pixels); 
 
 }

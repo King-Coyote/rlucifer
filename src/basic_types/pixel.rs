@@ -1,24 +1,29 @@
 use std::ops;
 
+#[derive(Default, Clone,)]
 pub struct Pixel {
-    r: f32,
-    g: f32,
-    b: f32,
+    pub r: u8,
+    pub g: u8,
+    pub b: u8,
 }
 
 impl Pixel {
-    pub fn new(r: f32, g: f32, b: f32) -> Self {
+    pub fn new(r: u8, g: u8, b: u8) -> Self {
         Pixel {r: r, g: g, b: b}
     }
 
-    pub fn new_blank() -> Self {
-        Pixel {r: 0.0, g: 0.0, b: 0.0}
+    pub fn new_default() -> Self {
+        Pixel {r: 255, g: 0, b: 255}
+    }
+
+    pub fn new_black() -> Self {
+        Pixel {r: 0, g: 0, b: 0}
     }
 }
 
 // OPERATORS
 
-fn clamp(val: f32, min: f32, max: f32) -> f32 {
+fn clamp(val: u8, min: u8, max: u8) -> u8 {
     match val {
         c if c > max => max,
         c if c < min => min,
@@ -31,9 +36,9 @@ impl ops::Add<Pixel> for Pixel {
 
     fn add (self, rhs: Pixel) -> Pixel {
         Pixel::new(
-            clamp(self.r + rhs.r, 0.0, 1.0), 
-            clamp(self.b + rhs.b, 0.0, 1.0), 
-            clamp(self.g + rhs.g, 0.0, 1.0)
+            clamp(self.r + rhs.r, 0, 255), 
+            clamp(self.b + rhs.b, 0, 255), 
+            clamp(self.g + rhs.g, 0, 255)
         )
     }
 }
@@ -43,17 +48,17 @@ impl ops::Sub<Pixel> for Pixel {
 
     fn sub(self, rhs: Pixel) -> Pixel {
         Pixel::new(
-            clamp(self.r - rhs.r, 0.0, 1.0), 
-            clamp(self.b - rhs.b, 0.0, 1.0), 
-            clamp(self.g - rhs.g, 0.0, 1.0)
+            clamp(self.r - rhs.r, 0, 255), 
+            clamp(self.b - rhs.b, 0, 255), 
+            clamp(self.g - rhs.g, 0, 255)
         )
     }
 }
 
-impl ops::Mul<f32> for Pixel {
+impl ops::Mul<u8> for Pixel {
     type Output = Pixel;
 
-    fn mul(self, rhs: f32) -> Pixel {
+    fn mul(self, rhs: u8) -> Pixel {
         Pixel::new(
             self.r * rhs, 
             self.g * rhs, 

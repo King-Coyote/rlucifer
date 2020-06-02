@@ -9,3 +9,9 @@ mod light;
 
 pub use self::camera::Camera;
 mod camera;
+
+pub use self::plane::Plane;
+mod plane;
+
+pub use self::sphere::Sphere;
+mod sphere;
