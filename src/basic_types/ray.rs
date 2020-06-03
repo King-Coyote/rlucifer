@@ -1,8 +1,8 @@
 use crate::basic_types::Vector3;
 
 pub struct Ray {
-    origin: Vector3,
-    dir: Vector3,
+    pub origin: Vector3,
+    pub dir: Vector3,
 }
 
 impl Ray {

@@ -9,6 +9,7 @@ use image_conversion::convert_image;
 mod basic_types;
 mod objects;
 mod image_conversion;
+mod util;
 
 fn main() {
 

@@ -68,6 +68,18 @@ impl ops::Add<Vector3> for Vector3 {
     }
 }
 
+impl<'a, 'b> ops::Sub<&'b Vector3> for &'a Vector3 {
+    type Output = Vector3;
+
+    fn sub(self, rhs: &'b Vector3) -> Vector3 {
+        Vector3::new(
+            self.x - rhs.x,
+            self.y - rhs.y,
+            self.z - rhs.z
+        )
+    }
+}
+
 impl ops::Div<f32> for &Vector3 {
     type Output = Vector3;
 

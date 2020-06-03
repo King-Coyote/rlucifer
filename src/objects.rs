@@ -15,3 +15,9 @@ mod plane;
 
 pub use self::sphere::Sphere;
 mod sphere;
+
+pub use self::renderable::Renderable;
+mod renderable;
+
+pub use self::materials::*;
+mod materials;
