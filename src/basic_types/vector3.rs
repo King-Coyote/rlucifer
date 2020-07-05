@@ -2,9 +2,9 @@ use std::ops;
 
 #[derive(Clone)]
 pub struct Vector3 {
-    x: f32,
-    y: f32,
-    z: f32,
+    pub x: f32,
+    pub y: f32,
+    pub z: f32,
 }
 
 impl Vector3 {
@@ -41,6 +41,29 @@ impl Vector3 {
 
     pub fn length(&self) -> f32 {
         (self.x.powi(2) + self.y.powi(2) + self.z.powi(2)).sqrt()
+    }
+
+    pub fn form_ons(&self) -> (Vector3, Vector3, Vector3) {
+        let v: Vector3;
+        if self.x.abs() > self.y.abs() {
+            let inv_len = 1.0 / (self.x * self.x + self.z * self.z).sqrt();
+            v = Vector3::new(self.z * -1.0 * inv_len, 0.0, self.x * inv_len);
+        } else {
+            let inv_len = 1.0 / (self.y * self.y + self.z * self.z).sqrt();
+            v = Vector3::new(0.0, self.z * inv_len, self.y * -1.0 * inv_len); // project to x=0 and get normalised vector
+        }
+        let w = self.cross(&v);
+        return (self.clone(), v, w);
+    }
+
+    pub fn distance_to(&self, other: &Vector3) -> f32 {
+        (other - self).length()
+    }
+}
+
+impl Default for Vector3 {
+    fn default() -> Self {
+        Vector3 {x: 0.0, y: 0.0, z: 0.0}
     }
 }
 

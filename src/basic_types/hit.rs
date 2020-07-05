@@ -1,19 +1,23 @@
-use crate::basic_types::{Vector3, };
+use crate::basic_types::{Vector3, Ray, };
+use crate::objects::{Material};
 
 pub struct Hit {
-    t: f32, // distance
-    point: Vector3,
-    normal: Vector3,
+    pub t: f32, // distance
+    pub point: Vector3,
+    pub normal: Vector3,
+    pub material: Material,
 }
 
 impl Hit {
-    pub fn new(t: f32, point: Vector3, normal: Vector3) -> Self {
+    pub fn new(t: f32, point: Vector3, normal: Vector3, material: Material) -> Self {
         Hit {
             t: t,
             point: point,
-            normal: normal
+            normal: normal,
+            material: material
         }
     }
+
 }
 
 // float          t; // length of ray ie distance away

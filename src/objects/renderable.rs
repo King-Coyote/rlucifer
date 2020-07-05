@@ -1,7 +1,7 @@
 use crate::basic_types::{Vector3, Ray, Hit,};
 
 pub trait Renderable {
-    fn get_id(&self) -> usize;
+    fn get_id(&self) -> String;
     fn get_normal_at(&self, point: Vector3) -> Vector3;
     fn get_intersection(&self, ray: &Ray) -> Option<Hit>;
 }

@@ -1,16 +1,27 @@
 use crate::basic_types::*;
-use crate::objects::Renderable;
-
+use crate::objects::{Renderable, Material};
 
 pub struct Sphere {
-    id: usize,
+    id: String,
     position: Vector3,
     radius: f32,
+    material: Material
+}
+
+impl Sphere {
+    pub fn new(id: String, position: Vector3, radius: f32, material: Material) -> Self {
+        Sphere {
+            id: id,
+            position: position,
+            radius: radius,
+            material: material
+        }
+    }
 }
 
 impl Renderable for Sphere {
-    fn get_id(&self) -> usize {
-        self.id
+    fn get_id(&self) -> String {
+        self.id.clone()
     }
 
     fn get_normal_at(&self, point: Vector3) -> Vector3 {
@@ -31,10 +42,20 @@ impl Renderable for Sphere {
             let soln2 = -B + dis.sqrt();
             if soln1 > 1e-3 {
                 let hit_point = &ray.origin + &(&ray.dir * (soln1/2.0));
-                Some(Hit::new(soln1 / 2.0, hit_point.clone(), self.get_normal_at(hit_point)))
+                Some(Hit::new(
+                    soln1 / 2.0, 
+                    hit_point.clone(), 
+                    self.get_normal_at(hit_point), 
+                    self.material.clone()
+                ))
             } else if soln2 > 1e-3 {
                 let hit_point = &ray.origin + &(&ray.dir * (soln2/2.0));
-                Some(Hit::new(soln2 / 2.0, hit_point.clone(), self.get_normal_at(hit_point)))
+                Some(Hit::new(
+                    soln2 / 2.0, 
+                    hit_point.clone(), 
+                    self.get_normal_at(hit_point), 
+                    self.material.clone()
+                ))
             } else {
                 None
             }

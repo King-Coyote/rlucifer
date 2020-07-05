@@ -9,9 +9,9 @@ pub fn convert_image(filename: &'static str, width: usize, height: usize, pixels
     for j in 0..height {
         for i in 0..width {
             img.set_pixel(i as i32, j as i32, Color::rgb(
-                pixels[i][j].r as u8,
-                pixels[i][j].g as u8,
-                pixels[i][j].b as u8
+                (pixels[i][j].r * 255.0) as u8,
+                (pixels[i][j].g * 255.0) as u8,
+                (pixels[i][j].b * 255.0) as u8
             )).unwrap();
         }
     }
