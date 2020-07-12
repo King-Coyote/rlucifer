@@ -4,7 +4,7 @@ use std::f32;
 
 pub struct Scene {
     pub lights: Vec<Light>,
-    pub objects: Vec<Box<dyn Renderable>>
+    pub objects: Vec<Box<dyn Renderable + Send + Sync>>
 }
 
 impl Scene {

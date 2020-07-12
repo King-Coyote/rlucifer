@@ -37,8 +37,8 @@ impl ops::Add<Pixel> for Pixel {
     fn add (self, rhs: Pixel) -> Pixel {
         Pixel::new(
             clamp(self.r + rhs.r, 0.0, 1.0), 
-            clamp(self.b + rhs.b, 0.0, 1.0), 
-            clamp(self.g + rhs.g, 0.0, 1.0)
+            clamp(self.g + rhs.g, 0.0, 1.0),
+            clamp(self.b + rhs.b, 0.0, 1.0)
         )
     }
 }

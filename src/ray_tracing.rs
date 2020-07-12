@@ -13,22 +13,17 @@ pub fn trace_ray(main_ray: &Ray, scene: &Scene, depth: u32) -> Option<Pixel> {
     // get nearest hit for ray
     let intersect = scene.get_closest_intersect(main_ray)?;
     // get the BDRF results and sampled ray for the hit surface
-    let (radiance, ray) = interact_ray(&main_ray, &intersect);
-
-    // get the explicit light from direct light sources
-    let explicit_light = get_explicit_light_contrib(&intersect, &scene);
+    let (mut radiance, ray) = interact_ray(&main_ray, &intersect, &scene);
 
     // recursively get the radiance as the ray traverses the scene
-    let mut total_radiance = Pixel::new_black();
-    if let Some(li) = trace_ray(&main_ray, &scene, depth + 1) {
-        total_radiance = radiance + (li * intersect.material.color);
+    if let Some(li) = trace_ray(&ray, &scene, depth + 1) {
+        radiance = radiance + (li * intersect.material.color);
     }
-    total_radiance = total_radiance + explicit_light * intersect.material.color;
 
-    Some(total_radiance)
+    Some(radiance)
 }
 
-fn interact_ray(ray: &Ray, hit: &Hit) -> (Pixel, Ray) {
+fn interact_ray(ray: &Ray, hit: &Hit, scene: &Scene) -> (Pixel, Ray) {
     let mut rando = rand::thread_rng();
     let mut out_ray = Ray::new_empty();
     let mut radiance =  Pixel::new_black();
@@ -36,11 +31,21 @@ fn interact_ray(ray: &Ray, hit: &Hit) -> (Pixel, Ray) {
         Finish::Diffuse {specularity, roughness} => {
             out_ray = test_sample_ray(&ray, &hit, &mut rando);
             radiance = Pixel::new_black();
+            radiance = radiance + get_explicit_light_contrib(&hit, &scene) * hit.material.color;
             // out_ray = sample_ray(&hit, roughness, &mut rando);
             // //FDG
             // let G = geometric_term(roughness);
             // let F = fresnel_term(roughness);
             // let D = normal_term(roughness);
+            // let kd = 1.0 - F;
+            // let denom = 4.0 * ray.dir.dot(&hit.normal) * out_ray.dir.dot(&hit.normal);
+        },
+        Finish::Metallic {specularity, roughness} => {
+            // out_ray = sample_ray_opaque(&ray, &hit, roughness, &mut rando);
+            //FDG
+            // let G = geometric_term(&ray.dir, roughness);
+            // let F = fresnel_term(&ray.dir, roughness);
+            // let D = normal_term(&ray.dir, roughness);
             // let kd = 1.0 - F;
             // let denom = 4.0 * ray.dir.dot(&hit.normal) * out_ray.dir.dot(&hit.normal);
         },
@@ -71,21 +76,36 @@ fn interact_ray(ray: &Ray, hit: &Hit) -> (Pixel, Ray) {
 //     )
 // }
 
-// fn sample_ray(hit: &Hit, roughness: f32, rando: &mut ThreadRng) -> Ray {
-//     let epsilon: f32 = rando.gen::<f32>(); // this doesn't appear to be a float
+// fn sample_ray_opaque(ray: &Ray, hit: &Hit, roughness: f32, rando: &mut ThreadRng) -> Ray {
+//     let epsilon = rando.gen::<f32>();
 //     let phi = rando.gen::<f32>() * 2.0 * PI;
 //     let inner_sqrt = (epsilon / (1.0 - epsilon)).sqrt();
 //     let theta = (roughness * inner_sqrt).arctan();
 //     let scaling = 4.0 * half_vector() * output_direction();
-//     let dir = make_dir_from_spherical_coords();
+//     let dir = make_dir_from_spherical_coords(phi, theta);
 //     return Ray::new(hit.point.clone(), dir);
-//     // ocnvert these to cartesian ray dir
+// }
+
+// fn make_dir_from_spherical_coords(phi: f32, theta: f32) -> Vector3 {
+
+// }
+
+// fn geometric_term(r_i: &Vector3, roughness: f32) -> f32 {
+
+// }
+
+// fn fresnel_term(r_i: &Vector3, roughness: f32) -> f32 {
+
+// }
+
+// fn normal_term(r_i: &Vector3, roughness: f32) -> f32 {
+
 // }
 
 fn test_sample_ray(ray: &Ray, hit: &Hit, rand: &mut ThreadRng) -> Ray {
         // intersection with glossy object, using phong cosine model
         let roughness = 0.1;
-        let specularity = 0.5;
+        let specularity = 0.0;
         let cos_i = (&hit.normal * -1.0).dot(&ray.dir);
         let spec_dir = (&ray.dir + &(&hit.normal * cos_i * 2.0)).normalise();
     
@@ -115,11 +135,9 @@ fn get_explicit_light_contrib(hit: &Hit, scene: &Scene) -> Pixel {
         let light_hit = scene.get_closest_intersect(&to_light);
         if light_hit.is_some() && light_dist <= light_hit.unwrap().t {
             let w = (light.get_position() - &hit.point).normalise();
-            // deleteme
-            let dot = hit.normal.dot(&w);
-            let dert = (light.color * light.intensity * hit.normal.dot(&w));
+            let inv_sq_dist = 1.0 / light_dist.powf(2.0);
             // TODO the dot product should be replaced by the material's BRDF once you have that going.
-            explicit_light = explicit_light + (light.color * light.intensity * hit.normal.dot(&w));
+            explicit_light = explicit_light + (light.color * light.intensity * inv_sq_dist * hit.normal.dot(&w));
         }
     }
     return explicit_light;

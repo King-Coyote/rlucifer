@@ -32,7 +32,7 @@ impl Camera {
         let beta = (y as f32 / self.height as f32) - 0.5;
     
         let fovX = 3.141593 / 2.0;
-        let fovY = ((self.height / self.width) as f32) * fovX;
+        let fovY = (self.height as f32 / self.width as f32) * fovX;
     
         (&self.right * alpha*fovX) +
         (&self.up * beta*fovY) +
